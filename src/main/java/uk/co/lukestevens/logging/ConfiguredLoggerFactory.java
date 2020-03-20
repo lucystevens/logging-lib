@@ -1,5 +1,8 @@
 package uk.co.lukestevens.logging;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
 import uk.co.lukestevens.config.Config;
 import uk.co.lukestevens.logging.loggers.ConsoleLogger;
 import uk.co.lukestevens.logging.loggers.DatabaseLogger;
@@ -12,6 +15,7 @@ import uk.co.lukestevens.jdbc.Database;
  * 
  * @author luke.stevens
  */
+@Singleton
 public class ConfiguredLoggerFactory implements LoggerFactory {
 	
 	// A provider class to get a Logger from it's name
@@ -25,6 +29,7 @@ public class ConfiguredLoggerFactory implements LoggerFactory {
 	 * Create a new Logger factory using the application config.
 	 * @param config The application config to load the logger
 	 */
+	@Inject
 	public ConfiguredLoggerFactory(Config config) {
 		String loggerType = config.getAsStringOrDefault("logger.type", "console");
 		LoggerLevel minLevel = config.getParsedValueOrDefault("logger.level", LoggerLevel::valueOf, LoggerLevel.INFO);
