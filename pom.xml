@@ -112,7 +112,7 @@
 		<dependency>
 			<groupId>uk.co.lukestevens</groupId>
 			<artifactId>config-lib</artifactId>
-			<version>${lukestevens.lib.version}</version>
+			<version>1.0.1</version>
 			<type>test-jar</type>
 			<scope>test</scope>
 		</dependency>
