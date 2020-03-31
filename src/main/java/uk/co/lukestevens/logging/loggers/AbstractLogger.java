@@ -2,11 +2,10 @@ package uk.co.lukestevens.logging.loggers;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import uk.co.lukestevens.logging.Logger;
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.models.Log;
+import uk.co.lukestevens.utils.Dates;
 
 /**
  * An Abstract Logger that defines most of the
@@ -83,7 +82,7 @@ public abstract class AbstractLogger implements Logger {
 			log.setName(name);
 			log.setMessage(message);
 			log.setSeverity(level);
-			log.setTimestamp(new Date());
+			log.setTimestamp(Dates.now());
 			
 			this.log(log);
 		}
