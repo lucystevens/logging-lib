@@ -32,10 +32,10 @@ import uk.co.lukestevens.logging.loggers.ConsoleLogger;
 import uk.co.lukestevens.logging.loggers.DatabaseLogger;
 import uk.co.lukestevens.logging.loggers.FileLogger;
 import uk.co.lukestevens.logging.models.Log;
-import uk.co.lukestevens.mocks.MockConfigSource;
+import uk.co.lukestevens.testing.mocks.MockConfigSource;
 import uk.co.lukestevens.mocks.MockLogger;
 import uk.co.lukestevens.mocks.WriterOutputStream;
-import uk.co.lukestevens.test.db.TestDatabase;
+import uk.co.lukestevens.testing.db.TestDatabase;
 
 public class LoggerTest {
 	
