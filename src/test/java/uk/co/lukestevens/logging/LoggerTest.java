@@ -2,7 +2,6 @@ package uk.co.lukestevens.logging;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.StringWriter;
@@ -13,17 +12,14 @@ import java.nio.file.Paths;
 import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import uk.co.lukestevens.config.ApplicationProperties;
 import uk.co.lukestevens.config.Config;
-import uk.co.lukestevens.config.ConfigManager;
-import uk.co.lukestevens.encryption.EncryptionService;
-import uk.co.lukestevens.encryption.IgnoredEncryptionService;
+import uk.co.lukestevens.config.models.PropertiesConfig;
 import uk.co.lukestevens.hibernate.Dao;
 import uk.co.lukestevens.hibernate.HibernateController;
 import uk.co.lukestevens.logging.Logger;
@@ -32,7 +28,7 @@ import uk.co.lukestevens.logging.loggers.ConsoleLogger;
 import uk.co.lukestevens.logging.loggers.DatabaseLogger;
 import uk.co.lukestevens.logging.loggers.FileLogger;
 import uk.co.lukestevens.logging.models.Log;
-import uk.co.lukestevens.testing.mocks.MockConfigSource;
+import uk.co.lukestevens.testing.mocks.SimpleApplicationProperties;
 import uk.co.lukestevens.mocks.MockLogger;
 import uk.co.lukestevens.mocks.WriterOutputStream;
 import uk.co.lukestevens.testing.db.TestDatabase;
@@ -52,16 +48,7 @@ public class LoggerTest {
 		Files.deleteIfExists(logFile);
 	}
 	
-	static Config config;
 	TestDatabase db;
-	
-	@BeforeAll
-	public static void loadConfig() throws IOException {
-		EncryptionService encryption = new IgnoredEncryptionService();
-		File configFile = new File("src/test/resources/conf/test.conf");
-		ConfigManager configManager = new ConfigManager(configFile, encryption);
-		config = configManager.getAppConfig();
-	}
 	
 	@BeforeEach
 	public void setup() throws IOException, SQLException {
@@ -103,12 +90,6 @@ public class LoggerTest {
 	@Test
 	public void testConsoleLogger() throws Exception {
 		
-		Properties props = new Properties();
-		props.setProperty("logger.type", "CONSOLE");
-		props.setProperty("logger.level", "DEBUG");
-		
-		Config config = new MockConfigSource(props);
-		
 		StringWriter outString = new StringWriter();
 		StringWriter errString = new StringWriter();
 		
@@ -125,12 +106,8 @@ public class LoggerTest {
 			Field errField = ConsoleLogger.class.getDeclaredField("err");
 			errField.setAccessible(true);
 			errField.set(null, errStream);
-		
-			LoggerFactory factory = new ConfiguredLoggerFactory(config);
 			
-			Logger logger = factory.getLogger("test");
-			assertNotNull(logger);
-			assertEquals(ConsoleLogger.class, logger.getClass());
+			Logger logger = new ConsoleLogger("test", LoggerLevel.DEBUG);
 			
 			logger.error("This is an error");
 			logger.warning("This is a warning");
@@ -147,17 +124,7 @@ public class LoggerTest {
 	
 	@Test
 	public void testFileLogger() throws IOException {
-		Properties props = new Properties();
-		props.setProperty("logger.type", "FILE");
-		props.setProperty("logger.level", "WARNING");
-		props.setProperty("logger.file", "test.log");
-		Config config = new MockConfigSource(props);
-		
-		LoggerFactory factory = new ConfiguredLoggerFactory(config);
-		
-		Logger logger = factory.getLogger("test");
-		assertNotNull(logger);
-		assertEquals(FileLogger.class, logger.getClass());
+		Logger logger = new FileLogger("test", LoggerLevel.WARNING, "test.log");
 		
 		logger.error("This is an error");
 		logger.warning("This is a warning");
@@ -175,9 +142,7 @@ public class LoggerTest {
 	
 	@Test
 	public void testDatabaseLogger() throws IOException {
-		LoggerFactory factory = new ConfiguredLoggerFactory(config);
-		
-		Logger logger = factory.getLogger("test");
+		Logger logger = new DatabaseLogger(db, "logging-lib-test", "0.0.1-TEST", "test", LoggerLevel.INFO);
 		assertNotNull(logger);
 		assertEquals(DatabaseLogger.class, logger.getClass());
 		
@@ -186,7 +151,9 @@ public class LoggerTest {
 		logger.debug("This is for debug");
 		logger.info("This is some info");
 		
-		HibernateController hibernate = new HibernateController(config);
+		Config config = new PropertiesConfig(db.getProperties());
+		ApplicationProperties appProps = new SimpleApplicationProperties(null, null, "uk.co.lukestevens");
+		HibernateController hibernate = new HibernateController(config, appProps);
 		Dao<Log> dao = hibernate.getDao(Log.class);
 		
 		List<Log> logs = dao.list();
