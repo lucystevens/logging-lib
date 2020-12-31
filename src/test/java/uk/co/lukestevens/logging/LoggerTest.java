@@ -28,12 +28,15 @@ import uk.co.lukestevens.logging.loggers.ConsoleLogger;
 import uk.co.lukestevens.logging.loggers.DatabaseLogger;
 import uk.co.lukestevens.logging.loggers.FileLogger;
 import uk.co.lukestevens.logging.models.Log;
+import uk.co.lukestevens.testing.mocks.DateMocker;
 import uk.co.lukestevens.testing.mocks.SimpleApplicationProperties;
 import uk.co.lukestevens.mocks.MockLogger;
 import uk.co.lukestevens.mocks.WriterOutputStream;
 import uk.co.lukestevens.testing.db.TestDatabase;
 
 public class LoggerTest {
+	
+	static final Date CURRENT_DATE = new Date();
 	
 	final String errorRegex = "\\[ERROR\\]:\\t[0-9/: ]+\\ttest\\tThis is an error\\s*";
 	final String warningRegex = "\\[WARNING\\]:\\t[0-9/: ]+\\ttest\\tThis is a warning\\s*";
@@ -52,17 +55,9 @@ public class LoggerTest {
 	
 	@BeforeEach
 	public void setup() throws IOException, SQLException {
+		DateMocker.setCurrentDate(CURRENT_DATE);
 		this.db = new TestDatabase();
 		this.db.executeFile("setup");
-	}
-
-	
-	// Checks that date is less than 10 seconds before now
-	public static void assertDateIsNow(Date date) {
-		long millisToCheck = date.getTime();
-		long millisNow = System.currentTimeMillis();
-		assertTrue(millisToCheck > millisNow - 10000, "Date is more than 10 seconds ago");
-		assertTrue(millisToCheck <= millisNow, "Date is in the future");
 	}
 
 	@Test
@@ -75,7 +70,7 @@ public class LoggerTest {
 		assertEquals("IOException: Could not connect to database", log.getMessage());
 		assertEquals("test", log.getName());
 		assertEquals(LoggerLevel.ERROR, log.getSeverity());
-		assertDateIsNow(log.getTimestamp());
+		assertEquals(CURRENT_DATE, log.getTimestamp());
 	}
 	
 	@Test
@@ -167,7 +162,7 @@ public class LoggerTest {
 		assertEquals("logging-lib-test", error.getApplicationName());
 		assertEquals("0.0.1-TEST", error.getApplicationVersion());
 		
-		assertDateIsNow(error.getTimestamp());
+		assertEquals(CURRENT_DATE, error.getTimestamp());
 		
 		Log warning = logs.get(1);
 		assertEquals(2, warning.getId());
@@ -176,7 +171,7 @@ public class LoggerTest {
 		assertEquals(LoggerLevel.WARNING, warning.getSeverity());
 		assertEquals("logging-lib-test", warning.getApplicationName());
 		assertEquals("0.0.1-TEST", error.getApplicationVersion());
-		assertDateIsNow(warning.getTimestamp());
+		assertEquals(CURRENT_DATE, error.getTimestamp());
 		
 		Log debug = logs.get(2);
 		assertEquals(3, debug.getId());
@@ -185,7 +180,7 @@ public class LoggerTest {
 		assertEquals(LoggerLevel.DEBUG, debug.getSeverity());
 		assertEquals("logging-lib-test", debug.getApplicationName());
 		assertEquals("0.0.1-TEST", debug.getApplicationVersion());
-		assertDateIsNow(debug.getTimestamp());
+		assertEquals(CURRENT_DATE, error.getTimestamp());
 		
 		Log info = logs.get(3);
 		assertEquals(4, info.getId());
@@ -194,7 +189,7 @@ public class LoggerTest {
 		assertEquals(LoggerLevel.INFO, info.getSeverity());
 		assertEquals("logging-lib-test", info.getApplicationName());
 		assertEquals("0.0.1-TEST", info.getApplicationVersion());
-		assertDateIsNow(info.getTimestamp());
+		assertEquals(CURRENT_DATE, info.getTimestamp());
 	}
 
 }
