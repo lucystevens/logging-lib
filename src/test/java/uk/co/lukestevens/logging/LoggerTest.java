@@ -102,7 +102,7 @@ public class LoggerTest {
 			errField.setAccessible(true);
 			errField.set(null, errStream);
 			
-			Logger logger = new ConsoleLogger("test", LoggerLevel.DEBUG);
+			Logger logger = new ConsoleLogger("test", LoggerLevel.INFO);
 			
 			logger.error("This is an error");
 			logger.warning("This is a warning");
@@ -113,7 +113,7 @@ public class LoggerTest {
 			String out = outString.toString();
 			
 			assertTrue(err.matches(errorRegex + warningRegex));
-			assertTrue(out.matches(debugRegex));
+			assertTrue(out.matches(infoRegex));
 		}	
 	}
 	
@@ -137,7 +137,7 @@ public class LoggerTest {
 	
 	@Test
 	public void testDatabaseLogger() throws IOException {
-		Logger logger = new DatabaseLogger(db, "logging-lib-test", "0.0.1-TEST", "test", LoggerLevel.INFO);
+		Logger logger = new DatabaseLogger(db, "logging-lib-test", "0.0.1-TEST", "test", LoggerLevel.DEBUG);
 		assertNotNull(logger);
 		assertEquals(DatabaseLogger.class, logger.getClass());
 		
