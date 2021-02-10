@@ -2,16 +2,6 @@ package uk.co.lukestevens.logging.models;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
-
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.models.IEntity;
 
@@ -21,33 +11,15 @@ import uk.co.lukestevens.models.IEntity;
  * 
  * @author luke.stevens
  */
-@Entity
-@Table(name = "logs", schema= "core")
 public class Log extends IEntity{
 	
-	@Id
-	@GeneratedValue(generator="increment")
-	@GenericGenerator(name = "increment", strategy = "increment")
-	private Integer id;
-	
-	@Column(name = "application_name")
-	private String applicationName;
-	
-	@Column(name = "application_version")
-	private String applicationVersion;
-	
-	@Column(name = "logger_name")
-	private String name;
-	
-	@Column(name = "message")
-	private String message;
-	
-	@Enumerated(EnumType.STRING)
-	@Column(name = "severity")
-	private LoggerLevel severity;
-	
-	@Column(name = "timestamp")
-	private Date timestamp;
+	Integer id;
+	String applicationName;
+	String applicationVersion;
+	String name;
+	String message;
+	LoggerLevel severity;
+	Date timestamp;
 	
 	/**
 	 * @return The log id

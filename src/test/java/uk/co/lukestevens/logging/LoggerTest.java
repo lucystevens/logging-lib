@@ -17,19 +17,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import uk.co.lukestevens.config.ApplicationProperties;
-import uk.co.lukestevens.config.Config;
-import uk.co.lukestevens.config.models.PropertiesConfig;
-import uk.co.lukestevens.hibernate.Dao;
-import uk.co.lukestevens.hibernate.HibernateController;
+import uk.co.lukestevens.db.DatabaseResult;
 import uk.co.lukestevens.logging.Logger;
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.loggers.ConsoleLogger;
 import uk.co.lukestevens.logging.loggers.DatabaseLogger;
 import uk.co.lukestevens.logging.loggers.FileLogger;
 import uk.co.lukestevens.logging.models.Log;
+import uk.co.lukestevens.logging.models.LogBuilder;
 import uk.co.lukestevens.testing.mocks.DateMocker;
-import uk.co.lukestevens.testing.mocks.SimpleApplicationProperties;
 import uk.co.lukestevens.mocks.MockLogger;
 import uk.co.lukestevens.mocks.WriterOutputStream;
 import uk.co.lukestevens.testing.db.TestDatabase;
@@ -136,7 +132,7 @@ public class LoggerTest {
 	}
 	
 	@Test
-	public void testDatabaseLogger() throws IOException {
+	public void testDatabaseLogger() throws IOException, SQLException {
 		Logger logger = new DatabaseLogger(db, "logging-lib-test", "0.0.1-TEST", "test", LoggerLevel.DEBUG);
 		assertNotNull(logger);
 		assertEquals(DatabaseLogger.class, logger.getClass());
@@ -146,12 +142,19 @@ public class LoggerTest {
 		logger.debug("This is for debug");
 		logger.info("This is some info");
 		
-		Config config = new PropertiesConfig(db.getProperties());
-		ApplicationProperties appProps = new SimpleApplicationProperties(null, null, "uk.co.lukestevens");
-		HibernateController hibernate = new HibernateController(config, appProps);
-		Dao<Log> dao = hibernate.getDao(Log.class);
-		
-		List<Log> logs = dao.list();
+		List<Log> logs;
+		try(DatabaseResult dbr = db.query("SELECT * from core.logs")){
+			logs = dbr.parseResultSet(rs -> 
+				LogBuilder.withId(rs.getInt("id"))
+					.applicationName(rs.getString("application_name"))
+					.applicationVersion(rs.getString("application_version"))
+					.name(rs.getString("logger_name"))
+					.message(rs.getString("message"))
+					.severity(rs.getString("severity"))
+					.timestamp(rs.getDate("timestamp"))
+					.build()
+				);
+		}
 		assertEquals(4, logs.size());
 		
 		Log error = logs.get(0);

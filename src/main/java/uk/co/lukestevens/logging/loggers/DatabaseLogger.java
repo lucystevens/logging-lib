@@ -1,12 +1,10 @@
 package uk.co.lukestevens.logging.loggers;
 
-import java.io.IOException;
 import java.sql.SQLException;
 
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.models.Log;
-import uk.co.lukestevens.jdbc.Database;
-import uk.co.lukestevens.jdbc.result.DatabaseKey;
+import uk.co.lukestevens.db.Database;
 
 /**
  * A logger implementation that logs messages
@@ -39,8 +37,17 @@ public class DatabaseLogger extends AbstractLogger {
 
 	@Override
 	public void log(Log log) {
-		try(DatabaseKey key = db.update(SQL, app, version, log.getName(), log.getMessage(), log.getSeverity().name(), log.getTimestamp())) {
-		} catch (SQLException | IOException e) {
+		try {
+			db.update(
+					SQL,
+					app,
+					version,
+					log.getName(),
+					log.getMessage(),
+					log.getSeverity().name(),
+					log.getTimestamp()
+				);
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
