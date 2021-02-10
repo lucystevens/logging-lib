@@ -151,7 +151,7 @@ public class LoggerTest {
 					.name(rs.getString("logger_name"))
 					.message(rs.getString("message"))
 					.severity(rs.getString("severity"))
-					.timestamp(rs.getDate("timestamp"))
+					.timestamp(rs.getTimestamp("timestamp"))
 					.build()
 				);
 		}
