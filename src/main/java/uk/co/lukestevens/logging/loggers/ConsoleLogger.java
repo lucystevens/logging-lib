@@ -12,8 +12,8 @@ import uk.co.lukestevens.logging.models.Log;
  */
 public class ConsoleLogger extends AbstractLogger {
 	
-	private static PrintStream out = System.out;
-	private static PrintStream err = System.err;
+	static PrintStream out = System.out;
+	static PrintStream err = System.err;
 	
 	/**
 	 * Create a new ConsoleLogger

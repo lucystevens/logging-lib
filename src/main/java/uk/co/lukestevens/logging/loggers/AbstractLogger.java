@@ -16,7 +16,7 @@ import uk.co.lukestevens.utils.Dates;
  */
 public abstract class AbstractLogger implements Logger {
 
-	final DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+	final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	final String name;
 	final LoggerLevel minLevel;
 	
