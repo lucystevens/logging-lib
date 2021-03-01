@@ -1,12 +1,11 @@
 package uk.co.lukestevens.logging.loggers;
 
-import java.io.IOException;
 import java.sql.SQLException;
+import java.util.function.Supplier;
 
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.models.Log;
-import uk.co.lukestevens.jdbc.Database;
-import uk.co.lukestevens.jdbc.result.DatabaseKey;
+import uk.co.lukestevens.db.Database;
 
 /**
  * A logger implementation that logs messages
@@ -24,13 +23,13 @@ public class DatabaseLogger extends AbstractLogger {
 
 	/**
 	 * Creates a new Database Logger
-	 * @param dao The dao to use to write Logs
-	 * @param app The application
+	 * @param db The database to use to write Logs
+	 * @param app The application name
 	 * @param version The application version
 	 * @param name The name of the logger
 	 * @param minLevel The minimum level this logger should log for
 	 */
-	public DatabaseLogger(Database db, String app, String version, String name, LoggerLevel minLevel) {
+	public DatabaseLogger(Database db, String app, String version, String name, Supplier<LoggerLevel> minLevel) {
 		super(name, minLevel);
 		this.db = db;
 		this.app = app;
@@ -39,8 +38,17 @@ public class DatabaseLogger extends AbstractLogger {
 
 	@Override
 	public void log(Log log) {
-		try(DatabaseKey key = db.update(SQL, app, version, log.getName(), log.getMessage(), log.getSeverity().name(), log.getTimestamp())) {
-		} catch (SQLException | IOException e) {
+		try {
+			db.update(
+					SQL,
+					app,
+					version,
+					log.getName(),
+					log.getMessage(),
+					log.getSeverity().name(),
+					log.getTimestamp()
+				);
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 	}
