@@ -1,6 +1,7 @@
 package uk.co.lukestevens.logging.loggers;
 
 import java.io.PrintStream;
+import java.util.function.Supplier;
 
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.models.Log;
@@ -20,7 +21,7 @@ public class ConsoleLogger extends AbstractLogger {
 	 * @param name The name of the logger
 	 * @param minLevel The minimum level this logger should log for
 	 */
-	public ConsoleLogger(String name, LoggerLevel minLevel) {
+	public ConsoleLogger(String name, Supplier<LoggerLevel> minLevel) {
 		super(name, minLevel);
 	}
 

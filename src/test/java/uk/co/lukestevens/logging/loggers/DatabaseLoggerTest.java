@@ -36,7 +36,7 @@ public class DatabaseLoggerTest {
 	
 	@Test
 	public void testLog() throws IOException, SQLException, ParseException {
-		DatabaseLogger logger = new DatabaseLogger(db, "logging-lib-test", "0.0.1-test", null, LoggerLevel.DEBUG);
+		DatabaseLogger logger = new DatabaseLogger(db, "logging-lib-test", "0.0.1-test", null, () -> LoggerLevel.DEBUG);
 		
 		Log log = new Log();
 		log.setMessage("log-message");
@@ -78,7 +78,7 @@ public class DatabaseLoggerTest {
 				date
 				)).thenThrow(exception);
 		
-		DatabaseLogger logger = new DatabaseLogger(mockDb, "logging-lib-test", "0.0.1-test", null, LoggerLevel.DEBUG);
+		DatabaseLogger logger = new DatabaseLogger(mockDb, "logging-lib-test", "0.0.1-test", null, () -> LoggerLevel.DEBUG);
 		
 		Log log = new Log();
 		log.setMessage("log-message");

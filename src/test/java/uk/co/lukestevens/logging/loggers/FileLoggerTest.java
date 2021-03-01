@@ -29,13 +29,11 @@ public class FileLoggerTest {
 	
 	@Test
 	public void testLogOnce() throws IOException, ParseException {
-		FileLogger logger = new FileLogger("test", LoggerLevel.WARNING, "test.log");
+		FileLogger logger = new FileLogger("test", () -> LoggerLevel.WARNING, "test.log");
 		
 		Date date = df.parse("2021-02-22 18:46:00");
 		
 		Log log = new Log();
-		log.setApplicationName("logging-lib-test");
-		log.setApplicationVersion("0.0.1-test");
 		log.setMessage("log-message");
 		log.setName("FileLoggerTest");
 		log.setSeverity(LoggerLevel.ERROR);
@@ -53,11 +51,9 @@ public class FileLoggerTest {
 	
 	@Test
 	public void testLogMultiple() throws IOException, ParseException {
-		FileLogger logger = new FileLogger("test", LoggerLevel.WARNING, "test.log");
+		FileLogger logger = new FileLogger("test", () -> LoggerLevel.WARNING, "test.log");
 		
 		Log log1 = new Log();
-		log1.setApplicationName("logging-lib-test");
-		log1.setApplicationVersion("0.0.1-test");
 		log1.setMessage("log-message-one");
 		log1.setName("FileLoggerTest");
 		log1.setSeverity(LoggerLevel.DEBUG);
@@ -66,8 +62,6 @@ public class FileLoggerTest {
 		logger.log(log1);
 		
 		Log log2 = new Log();
-		log2.setApplicationName("logging-lib-test");
-		log2.setApplicationVersion("0.0.1-test");
 		log2.setMessage("log-message-two");
 		log2.setName("FileLoggerTest");
 		log2.setSeverity(LoggerLevel.WARNING);

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.function.Supplier;
 
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.models.Log;
@@ -23,7 +24,7 @@ public class FileLogger extends AbstractLogger {
 	 * @param minLevel The minimum level this logger should log for
 	 * @param out The file to log to
 	 */
-	public FileLogger(String name, LoggerLevel minLevel, String out) {
+	public FileLogger(String name, Supplier<LoggerLevel> minLevel, String out) {
 		super(name, minLevel);
 		this.out = out;
 	}

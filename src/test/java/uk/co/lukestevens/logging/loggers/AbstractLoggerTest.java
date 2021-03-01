@@ -88,7 +88,7 @@ public class AbstractLoggerTest {
 	@Test
 	public void testLogWhenLevelIsBelowMinimum() throws ParseException {
 		DateMocker.setCurrentDate(df.parse("2021-02-23 18:41:00"));
-		MockLogger logger = new MockLogger("AbstractLoggerTest", LoggerLevel.INFO);
+		MockLogger logger = new MockLogger("AbstractLoggerTest", () -> LoggerLevel.INFO);
 		logger.log("debug message", LoggerLevel.DEBUG);
 		
 		Log log = logger.getLastLog();
@@ -98,7 +98,7 @@ public class AbstractLoggerTest {
 	@Test
 	public void testLogWhenLevelIsMinimum() throws ParseException {
 		DateMocker.setCurrentDate(df.parse("2021-02-23 18:41:00"));
-		MockLogger logger = new MockLogger("AbstractLoggerTest", LoggerLevel.INFO);
+		MockLogger logger = new MockLogger("AbstractLoggerTest", () -> LoggerLevel.INFO);
 		logger.log("info message", LoggerLevel.INFO);
 		
 		Log log = logger.getLastLog();
@@ -111,7 +111,7 @@ public class AbstractLoggerTest {
 	@Test
 	public void testLogWhenLevelIsAboveMinimum() throws ParseException {
 		DateMocker.setCurrentDate(df.parse("2021-02-23 18:41:00"));
-		MockLogger logger = new MockLogger("AbstractLoggerTest", LoggerLevel.INFO);
+		MockLogger logger = new MockLogger("AbstractLoggerTest", () -> LoggerLevel.INFO);
 		logger.log("error message", LoggerLevel.ERROR);
 		
 		Log log = logger.getLastLog();

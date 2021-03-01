@@ -20,11 +20,9 @@ public class ConsoleLoggerTest {
 		ConsoleLogger.out = mock(PrintStream.class);
 		ConsoleLogger.err = mock(PrintStream.class);
 		
-		ConsoleLogger logger = new ConsoleLogger("test", LoggerLevel.INFO);
+		ConsoleLogger logger = new ConsoleLogger("test", () -> LoggerLevel.INFO);
 		
 		Log log = new Log();
-		log.setApplicationName("logging-lib-test");
-		log.setApplicationVersion("0.0.1-test");
 		log.setMessage("log-message");
 		log.setName("ConsoleLoggerTest");
 		log.setSeverity(LoggerLevel.INFO);
@@ -41,11 +39,9 @@ public class ConsoleLoggerTest {
 		ConsoleLogger.out = mock(PrintStream.class);
 		ConsoleLogger.err = mock(PrintStream.class);
 		
-		ConsoleLogger logger = new ConsoleLogger("test", LoggerLevel.INFO);
+		ConsoleLogger logger = new ConsoleLogger("test", () -> LoggerLevel.INFO);
 		
 		Log log = new Log();
-		log.setApplicationName("logging-lib-test");
-		log.setApplicationVersion("0.0.1-test");
 		log.setMessage("log-message");
 		log.setName("ConsoleLoggerTest");
 		log.setSeverity(LoggerLevel.ERROR);

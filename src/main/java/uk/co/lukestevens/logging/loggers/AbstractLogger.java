@@ -2,6 +2,8 @@ package uk.co.lukestevens.logging.loggers;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.function.Supplier;
+
 import uk.co.lukestevens.logging.Logger;
 import uk.co.lukestevens.logging.LoggerLevel;
 import uk.co.lukestevens.logging.models.Log;
@@ -18,14 +20,14 @@ public abstract class AbstractLogger implements Logger {
 
 	final DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	final String name;
-	final LoggerLevel minLevel;
+	final Supplier<LoggerLevel> minLevel;
 	
 	/**
 	 * Constructs this AbstractLogger
 	 * @param name The name of the logger
 	 * @param minLevel The minimum level this logger should log for
 	 */
-	protected AbstractLogger(String name, LoggerLevel minLevel) {
+	protected AbstractLogger(String name, Supplier<LoggerLevel> minLevel) {
 		this.name = name;
 		this.minLevel = minLevel;
 	}
@@ -77,7 +79,7 @@ public abstract class AbstractLogger implements Logger {
 	
 	@Override
 	public void log(String message, LoggerLevel level) {
-		if(level.value() >= minLevel.value()) {
+		if(level.value() >= minLevel.get().value()) {
 			Log log = new Log();
 			log.setName(name);
 			log.setMessage(message);
